@@ -15,3 +15,25 @@ KERNEL!="ram*", SUBSYSTEM=="block", RUN+="/usr/local/sbin/rodev /dev/%k"
 chmod 440 "${1}"
 blockdev --setro "${1}"
 ```
+
+
+
+## Linux kernel 5.10.83-1-lts
+
+`block/blk-core.c` is patched like this :
+
+```diff
+--- 5.10.19.original/blk-core.c 2023-03-15 13:44:20.176929833 +0100
++++ 5.10.19.me/blk-core.c	2023-03-15 13:44:02.353596114 +0100
+@@ -706,7 +706,7 @@
+        "Trying to write to read-only block-device %s (partno %d)\n",
+  bio_devname(bio, b), part->partno);
+  /* Older lvm-tools actually trigger this */
+- return false;
++ return true;
+  }
+ 
+  return false;
+  ```
+  
+  > see [here](https://github.com/vitaly-kamluk/Linux-write-blocker/tree/master/kernel) and [here](https://github.com/msuhanov/Linux-write-blocker) for more informations.
