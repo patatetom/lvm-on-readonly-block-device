@@ -198,6 +198,30 @@ a886843c556fcf8971b68d26c3bea9e734271af5  /dev/sdb1
 # vgchange -ay
   1 logical volume(s) in volume group "test.lvm" now active
 
+# lsblk -o+fstype
+NAME                           MAJ:MIN RM  SIZE RO TYPE  MOUNTPOINTS       FSTYPE
+loop0                            7:0    0  1,1G  1 loop                    
+└─rootfs                       254:0    0  1,1G  1 crypt /run/live/rootfs  squashfs
+sda                              8:0    0    4G  0 disk                    
+├─sda1                           8:1    0  2,8G  0 part  /mnt              ntfs
+└─sda2                           8:2    0  1,2G  0 part  /run/live/bootmnt vfat
+sdb                              8:16   0  256M  1 disk                    
+├─sdb1                           8:17   0   83M  1 part                    LVM2_member
+│ ├─test.lvm-lvm.test_rmeta_0  254:1    0    4M  0 lvm                     
+│ │ └─test.lvm-lvm.test        254:7    0   64M  0 lvm                     ext4
+│ └─test.lvm-lvm.test_rimage_0 254:2    0   64M  0 lvm                     
+│   └─test.lvm-lvm.test        254:7    0   64M  0 lvm                     ext4
+├─sdb2                           8:18   0   83M  1 part                    LVM2_member
+│ ├─test.lvm-lvm.test_rmeta_1  254:3    0    4M  0 lvm                     
+│ │ └─test.lvm-lvm.test        254:7    0   64M  0 lvm                     ext4
+│ └─test.lvm-lvm.test_rimage_1 254:4    0   64M  0 lvm                     
+│   └─test.lvm-lvm.test        254:7    0   64M  0 lvm                     ext4
+└─sdb3                           8:19   0   83M  1 part                    LVM2_member
+  ├─test.lvm-lvm.test_rmeta_2  254:5    0    4M  0 lvm                     
+  │ └─test.lvm-lvm.test        254:7    0   64M  0 lvm                     ext4
+  └─test.lvm-lvm.test_rimage_2 254:6    0   64M  0 lvm                     
+    └─test.lvm-lvm.test        254:7    0   64M  0 lvm                     ext4
+
 # flush && sha1sum /dev/sdb*
 c96ad903be2573c805c5968df4bfdaa2c1e3adb4  /dev/sdb
 a886843c556fcf8971b68d26c3bea9e734271af5  /dev/sdb1
