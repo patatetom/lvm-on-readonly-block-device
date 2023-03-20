@@ -506,3 +506,5 @@ the `bio_check_ro` function in the `block/blk-core.c` ([#](https://git.kernel.or
  }
  ...
 ```
+
+repositioning the `bio_check_ro` function in its "patched boolean version" does not cause any problem at compile time but does not prevent LVM from modifying the partitions during `vgchange`.
