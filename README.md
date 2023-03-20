@@ -212,6 +212,15 @@ c96ad903be2573c805c5968df4bfdaa2c1e3adb4  /dev/sdb
 a886843c556fcf8971b68d26c3bea9e734271af5  /dev/sdb1
 27d5e7f8ccf998f40efeac1d2ab1b004227f717f  /dev/sdb2
 7ccb5b44f0fb7c35be986612054db244f7213188  /dev/sdb3
+
+# vgchange -an
+  0 logical volume(s) in volume group "test.lvm" now active
+
+# flush && sha1sum /dev/sdb*
+c96ad903be2573c805c5968df4bfdaa2c1e3adb4  /dev/sdb
+a886843c556fcf8971b68d26c3bea9e734271af5  /dev/sdb1
+27d5e7f8ccf998f40efeac1d2ab1b004227f717f  /dev/sdb2
+7ccb5b44f0fb7c35be986612054db244f7213188  /dev/sdb3
 ```
 
 > checksums are constant throughout the test
@@ -420,4 +429,4 @@ c613bf2a8c92e4c7e94c60af6139ade64203c5a2  /dev/sdb1
 6a17c8f40bea416fe93ff3bdc11701adc7115494  /dev/sdb3
 ```
 
-> although `vgrename` fails, the partitions and thus the **disk** are indeed **modified**.
+> although `vgrename` fails, `vgchange -a(y|n)` modified the partitions, **resulting in a modified disk**.
