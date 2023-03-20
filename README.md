@@ -45,7 +45,7 @@ blockdev --setro "${1}"
 here are the test performed, the checksums are constant throughout the test :
 
 ```console
-# uname -r
+# uname -r    # patched
 5.10.83-1-lts
 
 # lsblk -o+fstype 
@@ -235,7 +235,7 @@ a886843c556fcf8971b68d26c3bea9e734271af5  /dev/sdb1
 here are the same test performed, the checksums are identical to the previous ones in inputs but **have changed during the test** :
 
 ```console
-# uname -r
+# uname -r    # not patched
 6.1.15-1-lts
 
 # lsblk -o+fstype
