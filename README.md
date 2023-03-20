@@ -23,14 +23,17 @@ blockdev --setro "${1}"
 `block/blk-core.c` is patched like this :
 
 ```diff
---- 5.10.19.original/blk-core.c 2023-03-15 13:44:20.176929833 +0100
-+++ 5.10.19.me/blk-core.c	2023-03-15 13:44:02.353596114 +0100
-@@ -706,7 +706,7 @@
-        "Trying to write to read-only block-device %s (partno %d)\n",
-  bio_devname(bio, b), part->partno);
-  /* Older lvm-tools actually trigger this */
-- return false;
-+ return true;
+--- 5.10.83.org.blk-core.c
++++ 5.10.83.me.blk-core.c
+@@ -705,7 +705,7 @@
+ 		       "Trying to write to read-only block-device %s (partno %d)\n",
+ 			bio_devname(bio, b), part->partno);
+ 		/* Older lvm-tools actually trigger this */
+-		return false;
++		return true;
+ 	}
+ 
+ 	return false;
   }
  
   return false;
@@ -430,3 +433,76 @@ c613bf2a8c92e4c7e94c60af6139ade64203c5a2  /dev/sdb1
 ```
 
 > although `vgrename` fails, `vgchange -a(y|n)` modified the partitions, **resulting in a modified disk**.
+
+my difficulty with this new kernel is the application of the patch because the introduction of `return true;` generates an error at compilation :
+
+```diff
+--- 6.1.15.org.blk-core.c
++++ 6.1.15.me.blk-core.c
+@@ -493,6 +493,7 @@
+ 		pr_warn("Trying to write to read-only block-device %pg\n",
+ 			bio->bi_bdev);
+ 		/* Older lvm-tools actually trigger this */
++		return true;
+ 	}
+ }
+```
+
+```console
+  SYNC    include/config/auto.conf
+  CC      arch/x86/kernel/asm-offsets.s
+  CALL    scripts/checksyscalls.sh
+  DESCEND objtool
+  DESCEND bpf/resolve_btfids
+  CC      block/bdev.o
+  CC      block/fops.o
+  CC      block/bio.o
+  CC      block/elevator.o
+  CC      block/blk-core.o
+block/blk-core.c: In function 'bio_check_ro':
+block/blk-core.c:496:24: error: 'return' with a value, in function returning void [-Werror=return-type]
+  496 |                 return true;
+      |                        ^~~~
+block/blk-core.c:488:20: note: declared here
+  488 | static inline void bio_check_ro(struct bio *bio)
+      |                    ^~~~~~~~~~~~
+cc1: some warnings being treated as errors
+make[2]: *** [scripts/Makefile.build:250: block/blk-core.o] Error 1
+make[1]: *** [scripts/Makefile.build:500: block] Error 2
+make: *** [Makefile:2005: .] Error 2
+```
+
+the `bio_check_ro` function in the `block/blk-core.c` source file has been deeply changed between these two versions of the kernel :
+
+```diff
+--- 5.10.83.org.blk-core.c
++++ 6.1.15.org.blk-core.c
+...
+@@ -680,40 +483,22 @@
+... 
+-static inline bool bio_check_ro(struct bio *bio, struct hd_struct *part)
++static inline void bio_check_ro(struct bio *bio)
+ {
+-       const int op = bio_op(bio);
+-
+-       if (part->policy && op_is_write(op)) {
+-               char b[BDEVNAME_SIZE];
+-
++       if (op_is_write(bio_op(bio)) && bdev_read_only(bio->bi_bdev)) {
+                if (op_is_flush(bio->bi_opf) && !bio_sectors(bio))
+-                       return false;
+-
+-               WARN_ONCE(1,
+-                      "Trying to write to read-only block-device %s (partno %d)\n",
+-                       bio_devname(bio, b), part->partno);
++                       return;
++               pr_warn("Trying to write to read-only block-device %pg\n",
++                       bio->bi_bdev);
+                /* Older lvm-tools actually trigger this */
+-               return false;
+        }
+-
+-       return false;
+ }
+ ...
+```
