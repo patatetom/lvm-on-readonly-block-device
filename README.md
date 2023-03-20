@@ -39,7 +39,7 @@ blockdev --setro "${1}"
   > see [here](https://github.com/vitaly-kamluk/Linux-write-blocker/tree/master/kernel) and [here](https://github.com/msuhanov/Linux-write-blocker) for more informations.
 
 
-here are the test performed, the checksums are constant throughout the test: :
+here are the test performed, the checksums are constant throughout the test :
 
 ```console
 # uname -r
@@ -82,7 +82,11 @@ c96ad903be2573c805c5968df4bfdaa2c1e3adb4  /dev/sdb
 a886843c556fcf8971b68d26c3bea9e734271af5  /dev/sdb1
 27d5e7f8ccf998f40efeac1d2ab1b004227f717f  /dev/sdb2
 7ccb5b44f0fb7c35be986612054db244f7213188  /dev/sdb3
+```
 
+> the udev rule is well applied and the writing is refused
+
+```console
 # pacman -Rsn lvm2
 error: target not found: lvm2
 
@@ -115,7 +119,11 @@ Total Installed Size:  7.81 MiB
 (2/4) Reloading device manager configuration...
 (3/4) Arming ConditionNeedsUpdate...
 (4/4) Updating linux initcpios...
+```
 
+> lvm2 is "removed" (eg. conf) and reinstalled (in version 2.03.14-2 at the time of kernel 5.10.83-1-lts)
+
+```console
 # pvdisplay 
   --- Physical volume ---
   PV Name               /dev/sdb1
@@ -206,6 +214,9 @@ a886843c556fcf8971b68d26c3bea9e734271af5  /dev/sdb1
 7ccb5b44f0fb7c35be986612054db244f7213188  /dev/sdb3
 ```
 
+> checksums are constant throughout the test
+
+
 
 ## Linux kernel 6.1.15-1-lts
 
@@ -252,7 +263,11 @@ c96ad903be2573c805c5968df4bfdaa2c1e3adb4  /dev/sdb
 a886843c556fcf8971b68d26c3bea9e734271af5  /dev/sdb1
 27d5e7f8ccf998f40efeac1d2ab1b004227f717f  /dev/sdb2
 7ccb5b44f0fb7c35be986612054db244f7213188  /dev/sdb3
+```
 
+> the udev rule is well applied and the writing is refused
+
+```console
 # pacman -Rsn lvm2
 checking dependencies...
 :: e2fsprogs optionally requires lvm2: for e2scrub
@@ -299,7 +314,11 @@ Total Installed Size:  8.97 MiB
 (2/4) Reloading device manager configuration...
 (3/4) Arming ConditionNeedsUpdate...
 (4/4) Updating linux initcpios...
+```
 
+> lvm2 is removed and reinstalled (in version 2.03.19-1)
+
+```console
 # pvdisplay 
   --- Physical volume ---
   PV Name               /dev/sdb1
@@ -400,3 +419,5 @@ c613bf2a8c92e4c7e94c60af6139ade64203c5a2  /dev/sdb1
 2e23fa0857326c07977aa171a4c354ca26db4e2e  /dev/sdb2
 6a17c8f40bea416fe93ff3bdc11701adc7115494  /dev/sdb3
 ```
+
+> although `vgrename` fails, the partitions and thus the **disk** are indeed **modified**.
