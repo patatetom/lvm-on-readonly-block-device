@@ -20,7 +20,7 @@ blockdev --setro "${1}"
 
 ## Linux kernel 5.10.83-1-lts
 
-`block/blk-core.c` ([#](https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/block/blk-core.c?h=v5.10.83)) is patched like this :
+`block/blk-core.c` ([#](https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/block/blk-core.c?h=v5.10.83#n694)) is patched like this :
 
 ```diff
 --- 5.10.83.org.blk-core.c
