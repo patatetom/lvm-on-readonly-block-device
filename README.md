@@ -496,7 +496,7 @@ make[1]: *** [scripts/Makefile.build:500: block] Error 2
 make: *** [Makefile:2005: .] Error 2
 ```
 
-the `bio_check_ro` function in the `block/blk-core.c` ([#](https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/block/blk-core.c?h=v6.1.15)) source file has been deeply changed between these two versions of the kernel :
+the `bio_check_ro` function in the `block/blk-core.c` ([#](https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/block/blk-core.c?h=v6.1.15#n488)) source file has been deeply changed between these two versions of the kernel :
 
 ```diff
 --- 5.10.83.org.blk-core.c
